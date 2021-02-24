@@ -1,2 +1,2 @@
-# script_utils
-A Script Utilities plugin.
+# scripts
+This plugin contains useful scripts and utilities as a plugin for convenience.
