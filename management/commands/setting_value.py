@@ -5,9 +5,9 @@ from utils import setting_handler
 
 
 class Command(BaseCommand):
-    """A management command to clean sections of OJS reviews."""
+    """A management command to update settings."""
 
-    help = "Cleans editor text out of OJS reviews."
+    help = "Updates settings for a given set of journals with the provided value."
 
     def add_arguments(self, parser):
         """ Adds arguments to Django's management command-line parser.
