@@ -317,13 +317,13 @@ class Command(BaseCommand):
             }
         )
 
-    def create_doi(self, target_article):
+    def create_doi(self, old_article, target_article):
         doi_prefix = setting_handler.get_setting(
             'Identifiers',
             'crossref_prefix',
             target_article.journal).value
         doi_suffix = render_template.get_requestless_content(
-            {'article': target_article},
+            {'article': old_article},
             target_article.journal,
             'doi_pattern',
             group_name='Identifiers'
