@@ -8,6 +8,7 @@ from submission import models as submission_models
 from journal import models as journal_models
 from core import models as core_models
 from identifiers import models as identifiers_models
+from utils import setting_handler, render_template
 
 
 class Command(BaseCommand):
@@ -69,9 +70,66 @@ class Command(BaseCommand):
                 self.copy_article(article, target_journal)
 
     def copy_article(self, article, target_journal):
-        new_article = submission_models.Article.objects.get(pk=article.pk)
-        new_article.pk = None
-        new_article.journal = target_journal
+        # Check for existing pubid in target journal
+        pub_id = article.pk
+        existing = identifiers_models.Identifier.objects.filter(
+            id_type='pubid',
+            identifier=pub_id,
+            article__journal=target_journal,
+        ).select_related('article').first()
+
+        if existing:
+            new_article = existing.article
+            self.stdout.write(
+                self.style.WARNING(
+                    f"Updating existing article {new_article.pk} for pubid {pub_id} in {target_journal.code}"
+                )
+            )
+        else:
+            new_article = submission_models.Article(
+                journal=target_journal,
+                title=article.title,
+                abstract=article.abstract,
+                language=article.language,
+                stage=article.stage,
+                is_import=True,
+            )
+
+        new_article.title = article.title
+        new_article.subtitle = article.subtitle
+        new_article.abstract = article.abstract
+        new_article.non_specialist_summary = article.non_specialist_summary
+        new_article.language = article.language
+        new_article.is_remote = article.is_remote
+        new_article.remote_url = article.remote_url
+        new_article.correspondence_author = article.correspondence_author
+        new_article.competing_interests_bool = article.competing_interests_bool
+        new_article.competing_interests = article.competing_interests
+        new_article.rights = article.rights
+        new_article.article_number = article.article_number
+        new_article.date_started = article.date_started
+        new_article.date_accepted = article.date_accepted
+        new_article.date_declined = article.date_declined
+        new_article.date_submitted = article.date_submitted
+        new_article.date_published = article.date_published
+        new_article.first_page = article.first_page
+        new_article.last_page = article.last_page
+        new_article.page_numbers = article.page_numbers
+        new_article.total_pages = article.total_pages
+        new_article.stage = article.stage
+        new_article.publication_fees = article.publication_fees
+        new_article.submission_requirements = article.submission_requirements
+        new_article.copyright_notice = article.copyright_notice
+        new_article.comments_editor = article.comments_editor
+        new_article.peer_reviewed = article.peer_reviewed
+        new_article.is_import = article.is_import
+        new_article.article_agreement = article.article_agreement
+        new_article.custom_how_to_cite = article.custom_how_to_cite
+        new_article.publisher_name = article.publisher_name
+        new_article.publication_title = article.publication_title
+        new_article.ISSN_override = article.ISSN_override
+        new_article.preprint_journal_article = article.preprint_journal_article
+        new_article.reviews_shared = article.reviews_shared
 
         # Section
         if article.section:
@@ -129,6 +187,7 @@ class Command(BaseCommand):
 
         # Pub ID to link to master record
         self.create_pub_id(article, new_article)
+        self.create_doi(new_article)
 
         self.stdout.write(
             self.style.SUCCESS(
@@ -188,6 +247,7 @@ class Command(BaseCommand):
 
             new_file = file.__class__.objects.get(pk=file.pk)
             new_file.pk = None
+            new_file.text = None
             new_file.file = new_inner_file
             new_file.article_id = new_article.pk
             new_file.save()
@@ -195,6 +255,7 @@ class Command(BaseCommand):
 
         new_file = file.__class__.objects.get(pk=file.pk)
         new_file.pk = None
+        new_file.text = None
         new_file.article_id = new_article.pk
         new_file.save()
 
@@ -202,7 +263,12 @@ class Command(BaseCommand):
             source_path = file.self_article_path()
             target_path = new_file.get_file_path(new_article)
             os.makedirs(os.path.dirname(target_path), exist_ok=True)
-            shutil.copy2(source_path, target_path)
+            try:
+                shutil.copy2(source_path, target_path)
+            except FileNotFoundError as err:
+                self.stdout.write(
+                    self.style.ERROR(err)
+                )
 
         return new_file
 
@@ -243,3 +309,21 @@ class Command(BaseCommand):
                 'enabled': True,
             }
         )
+
+    def create_doi(self, target_article):
+        doi_prefix = setting_handler.get_setting(
+            'Identifiers',
+            'crossref_prefix',
+            target_article.journal).value
+        doi_suffix = render_template.get_requestless_content(
+            {'article': target_article},
+            target_article.journal,
+            'doi_pattern',
+            group_name='Identifiers'
+        )
+        identifiers_models.Identifier.objects.create(
+            id_type='doi',
+            identifier=f'{doi_prefix}/{doi_suffix}',
+            article=target_article,
+        )
+        return '{0}/{1}'.format(doi_prefix, doi_suffix)
