@@ -193,8 +193,8 @@ class Command(BaseCommand):
         self.copy_galleys(article, new_article)
 
         # Pub ID to link to master record
-        # self.create_pub_id(article, new_article)
-        # self.create_doi(new_article)
+        self.create_pub_id(article, new_article)
+        self.create_doi(article, new_article)
 
         self.stdout.write(
             self.style.SUCCESS(
@@ -317,13 +317,13 @@ class Command(BaseCommand):
             }
         )
 
-    def create_doi(self, target_article):
+    def create_doi(self, source_article, target_article):
         doi_prefix = setting_handler.get_setting(
             'Identifiers',
             'crossref_prefix',
             target_article.journal).value
         doi_suffix = render_template.get_requestless_content(
-            {'article': target_article},
+            {'article': source_article},
             target_article.journal,
             'doi_pattern',
             group_name='Identifiers'
