@@ -3,6 +3,7 @@ import shutil
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.conf import settings
 
 from submission import models as submission_models
 from journal import models as journal_models
@@ -88,8 +89,6 @@ class Command(BaseCommand):
         else:
             new_article = submission_models.Article(
                 journal=target_journal,
-                title=article.title,
-                abstract=article.abstract,
                 language=article.language,
                 stage=article.stage,
                 is_import=True,
@@ -128,8 +127,16 @@ class Command(BaseCommand):
         new_article.publisher_name = article.publisher_name
         new_article.publication_title = article.publication_title
         new_article.ISSN_override = article.ISSN_override
+        new_article.ithenticate_id = article.ithenticate_id
+        new_article.ithenticate_score = article.ithenticate_score
         new_article.preprint_journal_article = article.preprint_journal_article
         new_article.reviews_shared = article.reviews_shared
+
+        for lang_code, _ in settings.LANGUAGES:
+            setattr(new_article, f"abstract_{lang_code}",
+                    getattr(article, f"abstract_{lang_code}", None))
+            setattr(new_article, f"title_{lang_code}",
+                    getattr(article, f"title_{lang_code}", None))
 
         # Section
         if article.section:
@@ -186,8 +193,8 @@ class Command(BaseCommand):
         self.copy_galleys(article, new_article)
 
         # Pub ID to link to master record
-        self.create_pub_id(article, new_article)
-        self.create_doi(new_article)
+        # self.create_pub_id(article, new_article)
+        # self.create_doi(new_article)
 
         self.stdout.write(
             self.style.SUCCESS(
