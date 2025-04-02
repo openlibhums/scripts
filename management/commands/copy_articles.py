@@ -42,12 +42,18 @@ class Command(BaseCommand):
             type=int,
             help='Optional single article ID to copy',
         )
+        parser.add_argument(
+            '--target-lang',
+            type=str,
+            help='Language code of the target journal eg "es" or "fr"',
+        )
 
     def handle(self, *args, **options):
         source_code = options['source']
         target_code = options['target']
         issue_id = options.get('issue')
         article_id = options.get('article')
+        self.target_lang = options.get('target_lang')
 
         try:
             source_journal = journal_models.Journal.objects.get(code=source_code)
@@ -137,6 +143,9 @@ class Command(BaseCommand):
                     getattr(article, f"abstract_{lang_code}", None))
             setattr(new_article, f"title_{lang_code}",
                     getattr(article, f"title_{lang_code}", None))
+
+        if self.target_lang:
+            article.title_en = getattr(article, f"title_{self.target_lang}")
 
         # Section
         if article.section:
@@ -280,7 +289,7 @@ class Command(BaseCommand):
         return new_file
 
     def copy_galleys(self, source_article, target_article):
-        for galley in source_article.galley_set.all():
+        for galley in source_article.galley_set.filter(label__icontains=self.target_lang):
             new_galley = core_models.Galley.objects.get(pk=galley.pk)
             new_galley.pk = None
             new_galley.article = target_article
