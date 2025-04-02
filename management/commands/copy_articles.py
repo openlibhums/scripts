@@ -145,9 +145,8 @@ class Command(BaseCommand):
                     getattr(article, f"title_{lang_code}", None))
 
         if self.target_lang:
-            article.title_en = getattr(article, f"title_{self.target_lang}")
-            article.title = getattr(article, f"title_{self.target_lang}")
-            article.save()
+            new_article.title_en = getattr(article, f"title_{self.target_lang}")
+            new_article.title = getattr(article, f"title_{self.target_lang}")
 
         # Section
         if article.section:
