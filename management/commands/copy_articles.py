@@ -23,14 +23,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--source',
-            required=True,
-            help='Source journal code',
+            'target',
+            help='Target journal code',
         )
         parser.add_argument(
-            '--target',
-            required=True,
-            help='Target journal code',
+            '--journal-code',
+            help='Optional code for a journal',
         )
         parser.add_argument(
             '--issue',
@@ -49,28 +47,25 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        source_code = options['source']
+        journal_code = options['journal_code']
         target_code = options['target']
         issue_id = options.get('issue')
         article_id = options.get('article')
         self.target_lang = options.get('target_lang')
 
         try:
-            source_journal = journal_models.Journal.objects.get(code=source_code)
             target_journal = journal_models.Journal.objects.get(code=target_code)
         except journal_models.Journal.DoesNotExist:
-            self.stderr.write(self.style.ERROR("One or both journals not found."))
+            self.stderr.write(self.style.ERROR("Target journal not found"))
             return
 
+        articles = submission_models.Article.objects.all()
         if article_id:
-            articles = submission_models.Article.objects.filter(
-                journal=source_journal,
-                pk=article_id,
-            )
-        else:
-            articles = submission_models.Article.objects.filter(journal=source_journal)
-            if issue_id:
-                articles = articles.filter(primary_issue_id=issue_id)
+            articles = articles.filter(pk=article_id)
+        elif issue_id:
+            articles = articles.filter(primary_issue_id=issue_id)
+        elif journal_code:
+            articles = articles.filter(journal__code=journal_code)
 
         for article in articles:
             with transaction.atomic():
