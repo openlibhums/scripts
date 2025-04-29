@@ -7,6 +7,7 @@ AUTHOR = 'Birkbeck Centre for Technology and Publishing'
 VERSION = '0.1'
 SHORT_NAME = 'scripts'
 JANEWAY_VERSION = "1.3.9"
+MANAGER_URL = 'scripts_manager'
 
 
 class Scripts(plugins.Plugin):
@@ -15,6 +16,7 @@ class Scripts(plugins.Plugin):
     description = DESCRIPTION
     author = AUTHOR
     short_name = SHORT_NAME
+    manager_url = MANAGER_URL
 
     version = VERSION
     janeway_version = JANEWAY_VERSION
