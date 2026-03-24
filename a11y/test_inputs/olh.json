@@ -1,0 +1,31 @@
+[
+  "http://localhost:8000/?theme=olh",
+  "http://localhost:8000/404/?theme=olh",
+  "http://localhost:8000/journals/?theme=olh",
+  "http://localhost:8000/contact/?theme=olh",
+
+  "http://localhost:8000/olh/?theme=olh",
+  "http://localhost:8000/olh/accessibility/?theme=olh",
+  "http://localhost:8000/olh/contact/?theme=olh ",
+  "http://localhost:8000/olh/editorialteam/?theme=olh",
+  "http://localhost:8000/olh/search/?theme=olh",
+  "http://localhost:8000/olh/site/about/?theme=olh",
+  "http://localhost:8000/olh/site/author-guidelines/?theme=olh",
+  "http://localhost:8000/olh/site/journal-policies/?theme=olh",
+  "http://localhost:8000/olh/submissions/?theme=olh",
+
+  "http://localhost:8000/olh/issues/?theme=olh",
+  "http://localhost:8000/olh/issue/402/info/?theme=olh",
+  "http://localhost:8000/olh/issue/409/info/?theme=olh",
+
+  "http://localhost:8000/olh/collections/?theme=olh",
+  "http://localhost:8000/olh/collections/846/?theme=olh",
+
+  "http://localhost:8000/olh/news/?theme=olh",
+  "http://localhost:8000/olh/news/429/?theme=olh",
+
+  "http://localhost:8000/olh/articles/?theme=olh",
+  "http://localhost:8000/olh/article/id/4403/?theme=olh",
+  "http://localhost:8000/olh/article/id/4405/?theme=olh"
+
+]

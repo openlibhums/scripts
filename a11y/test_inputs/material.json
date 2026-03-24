@@ -1,0 +1,27 @@
+[
+
+  "http://localhost:8000/olh/?theme=material",
+  "http://localhost:8000/olh/accessibility/?theme=material",
+  "http://localhost:8000/olh/contact/?theme=material ",
+  "http://localhost:8000/olh/editorialteam/?theme=material",
+  "http://localhost:8000/olh/search/?theme=material",
+  "http://localhost:8000/olh/site/about/?theme=material",
+  "http://localhost:8000/olh/site/author-guidelines/?theme=material",
+  "http://localhost:8000/olh/site/journal-policies/?theme=material",
+  "http://localhost:8000/olh/submissions/?theme=material",
+
+  "http://localhost:8000/olh/issues/?theme=material",
+  "http://localhost:8000/olh/issue/402/info/?theme=material",
+  "http://localhost:8000/olh/issue/409/info/?theme=material",
+
+  "http://localhost:8000/olh/collections/?theme=material",
+  "http://localhost:8000/olh/collections/846/?theme=material",
+
+  "http://localhost:8000/olh/news/?theme=material",
+  "http://localhost:8000/olh/news/429/?theme=material",
+
+  "http://localhost:8000/olh/articles/?theme=material",
+  "http://localhost:8000/olh/article/id/4403/?theme=material",
+  "http://localhost:8000/olh/article/id/4405/?theme=material"
+
+]
