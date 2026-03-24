@@ -12,7 +12,8 @@ Results appear in `playwright/test-results/` and this directory is overwritten e
 
 1. [axe](docs/axe.md) — `tests/axe-general.test.js` and `tests/axe-detail.test.js`
    Runs axe-core against a list of URLs and checks for WCAG 2.2 Level A/AA violations.
-
+2. [Target size](docs/target_size.md) — `tests/target_size.test.js`
+   Records the pixel dimensions of every focusable element against WCAG 2.2 AA (24 px) and AAA (44 px) thresholds. Outputs a markdown table and CSV to `test-results/`.
 
 
 ## URL input files
