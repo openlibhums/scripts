@@ -7,7 +7,7 @@
   <div class="large-12 columns">
     <div class="box">
       <div class="title-area">
-        <h2>Transform Article Titles</h2>
+        <h2>Transform Article Abstracts</h2>
       </div>
       <div class="content">
         <p>Enter either an article or issue ID, don't enter both. Articles must have JATS galley files.</p>
@@ -15,7 +15,7 @@
           {% csrf_token %}
           {{ form.as_p }}
 
-          <button class="button" type="submit">Transform Titles</button>
+          <button class="button" type="submit">Transform Abstracts</button>
         </form>
 
         {% if messages %}
